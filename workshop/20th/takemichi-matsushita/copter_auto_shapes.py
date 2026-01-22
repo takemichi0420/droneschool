@@ -2,11 +2,17 @@ import math
 import time
 from pymavlink import mavutil
 
+# 目的: 複数機のGUIDED制御で移動→円→多角形を順に描くデモ
+
+# --- 飛行パラメータ ---
 ALT = 10  # m
 ALT_REACHED_HOLD_S = 5
 ARRIVAL_RADIUS_M = 5.0
 NAV_SEND_INTERVAL_S = 1.0
 NAV_TIMEOUT_S = 300.0
+SHAPE_HOVER_S = 5.0
+
+# --- 通信・状態監視 ---
 MODE_TIMEOUT_S = 60.0
 MODE_RETRIES = 3
 ARM_TIMEOUT_S = 30.0
@@ -29,7 +35,6 @@ SHAPE_RADIUS_M = 40.0
 POLY_RADIUS_M = 60.0
 CIRCLE_POINTS = 20
 POLY_POINTS_PER_EDGE = 5
-SHAPE_HOVER_S = 5.0
 
 SYSIDS = list(range(1, 11))
 
@@ -42,6 +47,7 @@ def build_position_stage(sysids, positions, alt_m):
     return assignments
 
 def offset_latlon_m(lat, lon, north_m, east_m):
+    # 簡易の距離→緯度経度変換（小さな移動量前提）
     dlat = north_m / 111111.0
     dlon = east_m / (111111.0 * math.cos(math.radians(lat)))
     return lat + dlat, lon + dlon
@@ -73,10 +79,12 @@ def build_polygon_stage(sysids, center_lat, center_lon, alt_m, radius_m, sides, 
         n1, e1 = vertices[i]
         n2, e2 = vertices[(i + 1) % sides]
         for step in range(points_per_edge):
+            # 各辺を分割して軌跡点を生成（頂点は次辺で重複するので除外）
             t = step / points_per_edge
             base_points.append((n1 + (n2 - n1) * t, e1 + (e2 - e1) * t))
     total_points = len(base_points)
     for idx, sid in enumerate(sysids):
+        # 機体ごとに開始位置をずらして同時に分散
         offset = int(total_points * idx / n)
         waypoints = []
         for step in range(total_points):
@@ -90,6 +98,7 @@ def build_polygon_stage(sysids, center_lat, center_lon, alt_m, radius_m, sides, 
     return assignments
 
 def build_stage_sequence(sysids):
+    # ステージ定義（同じ形状でも機体ごとに開始点をずらす）
     stages = []
     stages.append(
         (
@@ -128,6 +137,7 @@ def haversine_m(lat1, lon1, lat2, lon2):
 
 def request_global_pos(sender, sysid, hz=5):
     interval_us = int(1_000_000 / hz)
+    # GLOBAL_POSITION_INT を定期的に送らせる
     sender.mav.command_long_send(
         sysid, 1,
         mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL,
@@ -139,6 +149,7 @@ def request_global_pos(sender, sysid, hz=5):
 
 def request_gps_raw(sender, sysid, hz=2):
     interval_us = int(1_000_000 / hz)
+    # GPS_RAW_INT を定期的に送らせる
     sender.mav.command_long_send(
         sysid, 1,
         mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL,
@@ -193,6 +204,7 @@ def get_mode_id(sender, mode_str):
 
 def set_mode(sender, sysid, mode_str):
     mode_id = get_mode_id(sender, mode_str)
+    # HEARTBEAT反映を待たずに先に送る（再送の保険）
     sender.mav.set_mode_send(
         sysid,
         mavutil.mavlink.MAV_MODE_FLAG_CUSTOM_MODE_ENABLED,
@@ -201,6 +213,7 @@ def set_mode(sender, sysid, mode_str):
 
 def set_mode_cmd(sender, sysid, mode_str):
     mode_id = get_mode_id(sender, mode_str)
+    # コマンド経由でも送信（機体によってはこちらが効く）
     sender.mav.command_long_send(
         sysid, 1,
         mavutil.mavlink.MAV_CMD_DO_SET_MODE,
@@ -212,6 +225,7 @@ def set_mode_cmd(sender, sysid, mode_str):
 
 def set_mode_with_ack(sender, receiver, sysid, mode_str, timeout_s=ACK_TIMEOUT_S):
     mode_id = get_mode_id(sender, mode_str)
+    # ACK を待って成功/失敗を判定
     sender.mav.command_long_send(
         sysid, 1,
         mavutil.mavlink.MAV_CMD_DO_SET_MODE,
@@ -339,6 +353,7 @@ def rtl(sender, sysid):
     )
 
 def goto_latlon(sender, sysid, lat, lon, alt_m):
+    # 位置制御（速度や加速度は無効化）
     sender.mav.set_position_target_global_int_send(
         0,
         sysid,
@@ -361,6 +376,7 @@ def wait_altitudes(receiver, sender, sysids, target_alt_m, timeout_s=120):
         msg = receiver.recv_match(type="GLOBAL_POSITION_INT", blocking=True, timeout=1)
         if not msg:
             if time.time() - last_global_msg >= GLOBAL_POS_RETRY_S:
+                # 送信が止まった場合に再要求
                 for sid in sysids:
                     request_global_pos(sender, sid, hz=5)
                 last_global_msg = time.time()
@@ -376,6 +392,7 @@ def wait_altitudes(receiver, sender, sysids, target_alt_m, timeout_s=120):
         raise TimeoutError(f"altitude not reached for sysids: {sorted(remaining)}")
 
 def navigate_waypoints(receiver, sender, waypoints_by_sysid, arrival_radius_m, timeout_s):
+    # 機体ごとに現在目標インデックスを保持して巡回
     active = {
         sid: {"idx": 0, "last_send": 0.0}
         for sid, wps in waypoints_by_sysid.items()
@@ -405,6 +422,7 @@ def navigate_waypoints(receiver, sender, waypoints_by_sysid, arrival_radius_m, t
         clon = msg.lon / 1e7
         dist = haversine_m(clat, clon, lat, lon)
         if dist <= arrival_radius_m:
+            # 近接したら次のウェイポイントへ
             state["idx"] += 1
             if state["idx"] >= len(waypoints_by_sysid[sid]):
                 del active[sid]

@@ -24,6 +24,27 @@ DEFAULTS = {
     "prearm_wait_s": 30,       # PreArmが消えるのを待つ最大時間
 }
 
+FIX_STR = {
+    0: "NO_GPS",
+    1: "NO_FIX",
+    2: "2D",
+    3: "3D",
+    4: "DGPS",
+    5: "RTK_FLOAT",
+    6: "RTK_FIXED",
+}
+
+EKF_ACTION_MAP = {
+    1: "その場で着陸",
+    2: "ホバリング",
+    3: "ホームポイントに戻る",
+}
+
+CELL_BALANCE_THRESHOLDS = (
+    (0.03, "正常"),
+    (0.05, "注意"),
+)
+
 
 def recv_latest(master, msg_type: str, timeout_s: float = 1.0):
     t0 = time.time()
@@ -127,6 +148,34 @@ def get_param_int(master, name: str, timeout_s: float = 3.0) -> Optional[int]:
     return None
 
 
+def ekf_action_label(value: Optional[int]) -> str:
+    if value is None:
+        return "不明"
+    return EKF_ACTION_MAP.get(value, f"不明({value})")
+
+
+def parse_cell_voltages(battery_status) -> List[float]:
+    """BATTERY_STATUS.voltagesから有効なセル電圧(V)だけを抜き出す。"""
+    if not battery_status or not getattr(battery_status, "voltages", None):
+        return []
+    out: List[float] = []
+    for mv in list(battery_status.voltages):
+        # 65535や0は未使用セルの値なので除外
+        if mv is None or mv <= 0 or mv >= 65535:
+            continue
+        out.append(mv / 1000.0)
+    return out
+
+
+def classify_cell_balance(delta_v: Optional[float]) -> str:
+    if delta_v is None:
+        return "不明"
+    for limit, label in CELL_BALANCE_THRESHOLDS:
+        if delta_v <= limit:
+            return label
+    return "異常"
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--conn", default="udp:127.0.0.1:14550")
@@ -148,12 +197,7 @@ def main():
     print(f"[OK] ハートビート受信: sys={master.target_system} comp={master.target_component}")
     request_message_rates(master)
     ekf_action_val = get_param_int(master, "FS_EKF_ACTION", timeout_s=3.0)
-    ekf_action_map = {
-        1: "その場で着陸",
-        2: "ホバリング",
-        3: "ホームポイントに戻る",
-    }
-    ekf_action_label = ekf_action_map.get(ekf_action_val, f"不明({ekf_action_val})") if ekf_action_val is not None else "不明"
+    ekf_action = ekf_action_label(ekf_action_val)
 
     # PreArmが落ち着くのを待つ（SITLでも起動直後はEKF/GPS待ちが出る）
     last_prearm = wait_prearm_clear(master, max_wait_s=args.prearm_wait_s)
@@ -185,27 +229,11 @@ def main():
             reasons.append(f"バッテリー電圧が低い: {batt_v:.2f}V < {args.battery_min_v:.2f}V")
     else:
         reasons.append("バッテリー電圧が不明（SYS_STATUS未受信）")
-    cell_voltages_v = []
-    cell_delta_v = None
-    cell_balance_label = "不明"
-    if battery_status and getattr(battery_status, "voltages", None):
-        raw_cells = list(battery_status.voltages)
-        for mv in raw_cells:
-            # 65535や0は未使用セルの値なので除外
-            if mv is None or mv <= 0 or mv >= 65535:
-                continue
-            cell_voltages_v.append(mv / 1000.0)
-        if len(cell_voltages_v) >= 2:
-            cell_delta_v = max(cell_voltages_v) - min(cell_voltages_v)
-            if cell_delta_v <= 0.03:
-                cell_balance_label = "正常"
-            elif cell_delta_v <= 0.05:
-                cell_balance_label = "注意"
-            else:
-                cell_balance_label = "異常"
+    cell_voltages_v = parse_cell_voltages(battery_status)
+    cell_delta_v = max(cell_voltages_v) - min(cell_voltages_v) if len(cell_voltages_v) >= 2 else None
+    cell_balance_label = classify_cell_balance(cell_delta_v)
 
     # GPS
-    FIX_STR = {0: "NO_GPS", 1: "NO_FIX", 2: "2D", 3: "3D", 4: "DGPS", 5: "RTK_FLOAT", 6: "RTK_FIXED"}
     gps_fix = int(gps.fix_type) if gps else None
     gps_fix_str = FIX_STR.get(gps_fix, f"UNKNOWN({gps_fix})") if gps_fix is not None else "N/A"
     gps_sats = int(gps.satellites_visible) if gps and gps.satellites_visible is not None else None
@@ -257,7 +285,7 @@ def main():
     print("  ※ fix=測位モード（例: 3D/RTK_FIXED）、sats=衛星数、hdop=水平位置精度の目安（小さいほど良い）")
     print(
         f"自動制御系統（EKF）: flags={int(ekf.flags) if ekf else 'N/A'}（必須={ekf_required}）, "
-        f"フェイルセーフ動作={ekf_action_label}"
+        f"フェイルセーフ動作={ekf_action}"
     )
     print("  ※ flags=EKFの合格項目ビット列（831=姿勢/速度/位置/高度/予測位置がOK）")
     print("STATUSTEXT（直近）:")

@@ -105,6 +105,16 @@ venv.bak/
 
 .DS_Store
 
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.npm
+.yarn-integrity
+
 # sitl
 multiple_vehicles/eeprom.bin
 multiple_vehicles/mav.parm
@@ -112,3 +122,11 @@ multiple_vehicles/mav.tlog
 multiple_vehicles/mav.tlog.raw
 multiple_vehicles/logs/*
 multiple_vehicles/terrain/*
+
+# SITL logs and parameter files (root directory)
+eeprom.bin
+mav.parm
+mav.tlog
+mav.tlog.raw
+logs/
+terrain/

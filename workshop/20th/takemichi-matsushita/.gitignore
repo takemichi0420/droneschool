@@ -1,0 +1,4 @@
+*.tlog
+*.tlog.raw
+*.parm
+terrain/

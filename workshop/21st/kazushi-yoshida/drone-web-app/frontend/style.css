@@ -1,0 +1,180 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Hiragino Kaku Gothic ProN", sans-serif;
+  background: #f2f4f7;
+  color: #1f2933;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #1f2933;
+  color: #fff;
+}
+
+header h1 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.ws-indicator {
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.ws-on {
+  background: #2f855a;
+}
+
+.ws-off {
+  background: #c53030;
+}
+
+main {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  align-items: flex-start;
+}
+
+.panels {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 340px;
+  flex-shrink: 0;
+}
+
+.panel {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
+}
+
+/* ステータス */
+.status-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.status-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed #edf2f7;
+  font-size: 0.9rem;
+}
+
+.status-list b {
+  font-variant-numeric: tabular-nums;
+}
+
+/* コントロール */
+.control-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.control-group label {
+  width: 100%;
+  font-size: 0.8rem;
+  color: #52606d;
+}
+
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #3182ce;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+button:hover {
+  background: #2b6cb0;
+}
+
+button.primary {
+  background: #2f855a;
+  width: 100%;
+}
+
+button.primary:hover {
+  background: #276749;
+}
+
+input,
+select {
+  padding: 7px 8px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  flex: 1;
+  min-width: 80px;
+}
+
+.log {
+  margin-top: 12px;
+  max-height: 140px;
+  overflow-y: auto;
+  font-size: 0.75rem;
+  background: #f7fafc;
+  border-radius: 6px;
+  padding: 8px;
+  color: #52606d;
+}
+
+.log div {
+  padding: 2px 0;
+  border-bottom: 1px solid #edf2f7;
+}
+
+/* 地図 */
+.map-section {
+  flex: 1;
+}
+
+#map {
+  height: calc(100vh - 130px);
+  min-height: 400px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  /* オフラインでタイルが読めない時も地図領域が分かるよう下地を敷く */
+  background: #e8eaed;
+}
+
+/* レスポンシブ: スマホ幅では縦並び */
+@media (max-width: 768px) {
+  main {
+    flex-direction: column;
+  }
+
+  .panels {
+    width: 100%;
+  }
+
+  #map {
+    height: 60vh;
+    width: 100%;
+  }
+}

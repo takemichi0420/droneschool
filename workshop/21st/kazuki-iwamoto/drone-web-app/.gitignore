@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+mav.tlog*
+mav.parm
+eeprom.bin
+*.BIN
+logs/
+terrain/

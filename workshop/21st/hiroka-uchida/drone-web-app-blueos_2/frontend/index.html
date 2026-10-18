@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ドローンWeb制御</title>
+    <link rel="stylesheet" href="/static/style.css?v=1.1">
+    <link rel="stylesheet" href="/static/leaflet/leaflet.css" />
+    <script src="/static/leaflet/leaflet.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>ドローンWeb制御</h1>
+
+        <div class="panels">
+            <div class="status-panel">
+                <h2>ドローンステータス</h2>
+                <p>接続状態: <span id="connectionStatus">未接続</span></p>
+                <p>アーム状態: <span id="armedStatus">未アーム</span></p>
+                <p>モード: <span id="modeStatus">UNKNOWN</span></p>
+                <p>緯度: <span id="latitudeStatus">0.0</span></p>
+                <p>経度: <span id="longitudeStatus">0.0</span></p>
+                <p>高度: <span id="altitudeStatus">0.0</span> m</p>
+            </div>
+
+            <div class="control-panel">
+                <h2>コマンド</h2>
+                <button id="connectBtn">接続</button>
+                <button id="armBtn">アーム</button>
+                <button id="landBtn">着陸</button>
+
+                <div class="command-group">
+                    <label for="takeoffAltitude">離陸高度 (m):</label>
+                    <input type="number" id="takeoffAltitude" value="10">
+                    <button id="takeoffBtn">離陸</button>
+                </div>
+
+                <div class="command-group">
+                    <label for="gotoLatitude">緯度:</label>
+                    <input type="number" id="gotoLatitude" value="36.2929038" step="0.000001">
+                    <label for="gotoLongitude">経度:</label>
+                    <input type="number" id="gotoLongitude" value="136.2850799" step="0.000001">
+                    <label for="gotoAltitude">高度 (m):</label>
+                    <input type="number" id="gotoAltitude" value="100">
+                    <button id="gotoBtn">移動</button>
+                </div>
+
+                <div class="command-group">
+                    <label for="modeSelect">モード:</label>
+                    <select id="modeSelect">
+                        <option value="GUIDED">GUIDED</option>
+                        <option value="AUTO">AUTO</option>
+                        <option value="RTL">RTL</option>
+                        <option value="LOITER">LOITER</option>
+                        <option value="STABILIZE">STABILIZE</option>
+                    </select>
+                    <button id="setModeBtn">モード設定</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="map"></div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

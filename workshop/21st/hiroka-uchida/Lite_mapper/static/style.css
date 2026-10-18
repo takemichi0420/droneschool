@@ -1,0 +1,154 @@
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", "Hiragino Sans", sans-serif;
+}
+
+body {
+    margin: 0;
+    background-color: #f0f2f5;
+    color: #222;
+}
+
+header {
+    background-color: #1a2733;
+    color: #fff;
+    padding: 12px 20px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.container {
+    display: flex;
+    height: calc(100vh - 56px);
+}
+
+.left-panel {
+    width: 320px;
+    background-color: #fff;
+    padding: 16px;
+    overflow-y: auto;
+    border-right: 1px solid #ddd;
+}
+
+.right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#map {
+    flex: 1;
+    min-height: 300px;
+}
+
+.panel-block {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.panel-block h2 {
+    font-size: 0.95rem;
+    margin: 0 0 8px 0;
+    color: #444;
+}
+
+.panel-block input {
+    width: 100%;
+    padding: 6px 8px;
+    margin-bottom: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.panel-block button {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 6px;
+    border: none;
+    border-radius: 4px;
+    background-color: #2b6cb0;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.panel-block button:hover {
+    background-color: #1e4e80;
+}
+
+#btn-disconnect,
+#btn-disarm,
+#btn-land {
+    background-color: #b02b2b;
+}
+
+#btn-disconnect:hover,
+#btn-disarm:hover,
+#btn-land:hover {
+    background-color: #801e1e;
+}
+
+#btn-rtl {
+    background-color: #b0762b;
+}
+
+#btn-rtl:hover {
+    background-color: #805419;
+}
+
+.status-badge {
+    text-align: center;
+    padding: 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.status-badge.connected {
+    background-color: #2b8a3e;
+}
+
+.status-badge.disconnected {
+    background-color: #999;
+}
+
+.status-panel {
+    background-color: #fff;
+    padding: 12px 20px;
+    border-top: 1px solid #ddd;
+}
+
+.status-panel table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.status-panel td {
+    padding: 4px 8px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+}
+
+.status-panel td:first-child {
+    width: 40%;
+    color: #555;
+}
+
+#log-area {
+    height: 120px;
+    overflow-y: auto;
+    background-color: #1a2733;
+    color: #b6ffb0;
+    font-size: 0.75rem;
+    font-family: monospace;
+    padding: 6px;
+    border-radius: 4px;
+}
+
+#log-area p {
+    margin: 2px 0;
+}

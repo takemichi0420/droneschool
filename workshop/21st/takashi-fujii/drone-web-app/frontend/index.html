@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drone Web Control App</title>
+    <link rel="stylesheet" href="/static/leaflet/leaflet.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <header>
+                <h1>Drone Control</h1>
+            </header>
+
+            <section class="panel status-panel">
+                <h2>Status</h2>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <span class="label">Connected</span>
+                        <span class="value" id="val-connected">False</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Armed</span>
+                        <span class="value" id="val-armed">False</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Mode</span>
+                        <span class="value" id="val-mode">UNKNOWN</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Latitude</span>
+                        <span class="value" id="val-lat">0.000000</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Longitude</span>
+                        <span class="value" id="val-lon">0.000000</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Altitude</span>
+                        <span class="value" id="val-alt">0.00 m</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Heading</span>
+                        <span class="value" id="val-hdg">0&deg;</span>
+                    </div>
+                </div>
+                <div id="system-messages" class="system-messages">Waiting to connect...</div>
+            </section>
+
+            <section class="panel control-panel">
+                <h2>Controls</h2>
+                
+                <div class="control-group">
+                    <button id="btn-connect" class="btn btn-primary">Connect</button>
+                </div>
+                
+                <div class="control-group dual-buttons">
+                    <button id="btn-arm" class="btn btn-danger">Arm</button>
+                    <button id="btn-disarm" class="btn btn-secondary">Disarm</button>
+                </div>
+
+                <div class="control-group">
+                    <label>Takeoff Altitude (m)</label>
+                    <div class="input-row">
+                        <input type="number" id="input-takeoff-alt" value="10" min="1" step="1">
+                        <button id="btn-takeoff" class="btn btn-action">Takeoff</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <button id="btn-land" class="btn btn-warning">Land</button>
+                </div>
+
+                <div class="control-group">
+                    <label>GoTo Target</label>
+                    <div class="coord-inputs">
+                        <input type="number" id="input-goto-lat" placeholder="Latitude" step="0.000001">
+                        <input type="number" id="input-goto-lon" placeholder="Longitude" step="0.000001">
+                        <input type="number" id="input-goto-alt" placeholder="Altitude (m)" step="0.1">
+                    </div>
+                    <button id="btn-goto" class="btn btn-action">Go To</button>
+                </div>
+
+                <div class="control-group">
+                    <label>Flight Mode</label>
+                    <div class="input-row">
+                        <select id="select-mode">
+                            <option value="GUIDED">GUIDED</option>
+                            <option value="AUTO">AUTO</option>
+                            <option value="RTL">RTL</option>
+                            <option value="LOITER">LOITER</option>
+                            <option value="STABILIZE">STABILIZE</option>
+                        </select>
+                        <button id="btn-mode" class="btn btn-action">Set</button>
+                    </div>
+                </div>
+            </section>
+        </aside>
+
+        <main class="map-container">
+            <div id="map"></div>
+        </main>
+    </div>
+
+    <script src="/static/leaflet/leaflet.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+</html>

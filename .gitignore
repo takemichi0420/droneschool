@@ -130,3 +130,6 @@ mav.tlog
 mav.tlog.raw
 logs/
 terrain/
+
+# Claude Code local settings
+.claude/settings.local.json

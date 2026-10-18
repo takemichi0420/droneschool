@@ -1,0 +1,57 @@
+name: Discord PR Notify
+
+on:
+  # フォーク由来の PR でも Secrets を使えるよう pull_request_target を使う
+  # (PR のコードはチェックアウト・実行せず、番号と URL しか参照しないため安全)
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - closed
+  pull_request_review:
+    types:
+      - submitted
+  pull_request_review_comment:
+    types:
+      - created
+  issue_comment:
+    types:
+      - created
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    # issue_comment は通常の Issue でも発火するため PR のコメントだけに絞る
+    if: ${{ github.event_name != 'issue_comment' || github.event.issue.pull_request }}
+
+    steps:
+      - name: Send Discord
+        env:
+          # イベントごとに番号・URL の置き場所が違うのでフォールバックさせる
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+          PR_URL: ${{ github.event.pull_request.html_url || github.event.issue.html_url }}
+          ACTION: ${{ github.event.action }}
+          EVENT_NAME: ${{ github.event_name }}
+          MERGED: ${{ github.event.pull_request.merged }}
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          if [ -z "$WEBHOOK" ]; then
+            echo "DISCORD_WEBHOOK が空のため通知をスキップします" >&2
+            exit 0
+          fi
+          # イベント種別・アクション種別を日本語ラベルに変換
+          case "$EVENT_NAME:$ACTION" in
+            pull_request_target:opened) LABEL="オープン" ;;
+            pull_request_target:edited) LABEL="編集" ;;
+            pull_request_target:closed)
+              if [ "$MERGED" = "true" ]; then LABEL="マージ"; else LABEL="クローズ"; fi
+              ;;
+            pull_request_review:submitted) LABEL="レビュー" ;;
+            pull_request_review_comment:created) LABEL="レビューコメント" ;;
+            issue_comment:created) LABEL="コメント" ;;
+            *) LABEL="$ACTION" ;;
+          esac
+          curl -H "Content-Type: application/json" \
+          -d "$(jq -n --arg l "$LABEL" --arg n "$PR_NUMBER" --arg u "$PR_URL" \
+            '{content: ("PR" + $l + ": #" + $n + "\n" + $u)}')" \
+          "$WEBHOOK"

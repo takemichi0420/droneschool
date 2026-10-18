@@ -1,0 +1,149 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  background: #f4f6f8;
+  color: #222;
+}
+
+header h1 {
+  margin: 0 0 4px;
+  font-size: 1.4rem;
+}
+
+.message {
+  margin: 0 0 12px;
+  min-height: 1.2em;
+  font-size: 0.9rem;
+  color: #0066cc;
+}
+
+/* 2カラム: 左にパネル、右に地図 */
+.container {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.panel h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 6px;
+}
+
+/* ステータス */
+.status-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.status-table th,
+.status-table td {
+  padding: 4px 6px;
+  border-bottom: 1px solid #f0f0f0;
+  text-align: left;
+}
+
+.status-table th {
+  width: 45%;
+  color: #555;
+  font-weight: normal;
+}
+
+.status-table td {
+  font-family: "Consolas", "Menlo", monospace;
+}
+
+/* コントロール */
+.control-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.control-row label {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.control-group {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin: 8px 0;
+  padding: 4px 10px 8px;
+}
+
+.control-group legend {
+  font-size: 0.9rem;
+  color: #555;
+  padding: 0 4px;
+}
+
+input[type="number"],
+select {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 110px;
+  font-size: 0.95rem;
+}
+
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  background: #546e7a;
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+button.primary {
+  background: #0066cc;
+}
+
+/* 地図 */
+#map {
+  height: 75vh;
+  min-height: 420px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* スマートフォン幅では縦並び */
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  #map {
+    height: 50vh;
+    min-height: 300px;
+  }
+}

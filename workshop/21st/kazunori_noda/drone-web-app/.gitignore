@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+dist/
+*.egg-info/
+
+# SITL / MAVProxy 生成物
+mav.tlog
+mav.tlog.raw
+mav.parm
+eeprom.bin
+*.BIN
+logs/
+terrain/

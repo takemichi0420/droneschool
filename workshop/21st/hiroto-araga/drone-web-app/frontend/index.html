@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drone Web Controller</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header>
+        <h1>Drone Web Controller</h1>
+        <p>ブラウザからドローンの状態と基本コマンドを操作します。</p>
+      </header>
+
+      <main class="layout">
+        <section class="panel controls">
+          <h2>ステータス</h2>
+          <div class="status-grid">
+            <div><span>接続</span><strong id="connected">false</strong></div>
+            <div><span>アーム</span><strong id="armed">false</strong></div>
+            <div><span>モード</span><strong id="mode">UNKNOWN</strong></div>
+            <div><span>緯度</span><strong id="latitude">0.000000</strong></div>
+            <div><span>経度</span><strong id="longitude">0.000000</strong></div>
+            <div><span>高度</span><strong id="altitude">0.00</strong></div>
+            <div><span>ヘディング</span><strong id="heading">0</strong></div>
+          </div>
+
+          <h2>コントロール</h2>
+          <div class="button-row">
+            <button id="connectButton">接続</button>
+            <button id="armButton">アーム</button>
+            <button id="disarmButton">ディスアーム</button>
+            <button id="landButton">着陸</button>
+          </div>
+
+          <div class="input-group">
+            <label for="takeoffHeight">離陸高度 (m)</label>
+            <input id="takeoffHeight" type="number" value="3" min="1" step="1" />
+            <button id="takeoffButton">離陸</button>
+          </div>
+
+          <div class="input-group grid-3">
+            <label>
+              緯度
+              <input id="gotoLat" type="number" value="35.681236" step="0.000001" />
+            </label>
+            <label>
+              経度
+              <input id="gotoLon" type="number" value="139.767125" step="0.000001" />
+            </label>
+            <label>
+              高度 (m)
+              <input id="gotoAlt" type="number" value="10" step="1" />
+            </label>
+          </div>
+          <button id="gotoButton">GoTo</button>
+
+          <div class="input-group">
+            <label for="modeSelect">モード</label>
+            <select id="modeSelect">
+              <option value="GUIDED">GUIDED</option>
+              <option value="AUTO">AUTO</option>
+              <option value="RTL">RTL</option>
+              <option value="LOITER">LOITER</option>
+              <option value="STABILIZE">STABILIZE</option>
+            </select>
+            <button id="modeButton">モード変更</button>
+          </div>
+
+          <div id="statusMessage" class="status-message">待機中</div>
+        </section>
+
+        <section class="panel map-panel">
+          <div id="map"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="/static/script.js"></script>
+  </body>
+</html>

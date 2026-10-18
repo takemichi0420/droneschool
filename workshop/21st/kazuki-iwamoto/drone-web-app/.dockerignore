@@ -1,0 +1,17 @@
+__pycache__/
+**/__pycache__/
+*.pyc
+.git
+*.md
+mav.tlog*
+**/mav.tlog*
+mav.parm
+**/mav.parm
+eeprom.bin
+**/eeprom.bin
+*.BIN
+**/*.BIN
+logs/
+**/logs/
+terrain/
+**/terrain/

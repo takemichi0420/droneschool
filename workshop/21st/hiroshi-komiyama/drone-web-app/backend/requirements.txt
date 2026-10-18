@@ -1,0 +1,4 @@
+fastapi==0.140.0
+uvicorn[standard]==0.51.0
+websockets==14.1
+pymavlink==2.4.49

@@ -1,0 +1,29 @@
+name: Discord Push Notify
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'dronekit_scripts/**'
+      - 'pymavlink_scripts/**'
+      - 'mp_scripts/**'
+      - 'webapp-blueos/**'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Discord
+        env:
+          ACTOR: ${{ github.actor }}
+          MESSAGE: ${{ github.event.head_commit.message }}
+          COMMIT_URL: ${{ github.event.head_commit.url }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          content=$(printf 'サンプルコード更新 (master push)\nby %s\n%s\n%s' "$ACTOR" "$MESSAGE" "$COMMIT_URL")
+          payload=$(jq -n --arg content "$content" '{content: $content}')
+          curl -H "Content-Type: application/json" \
+            -d "$payload" \
+            "$DISCORD_WEBHOOK"

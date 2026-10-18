@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+mav.tlog*
+mav.parm
+eeprom.bin
+*.BIN
+logs/
+terrain/

@@ -6,7 +6,7 @@ from pymavlink import mavutil
 
 # Create the connection
 master :mavutil.mavfile = mavutil.mavlink_connection(
-    "127.0.0.1:14551", source_system=1, source_component=90)
+    "tcp:127.0.0.1:5762", source_system=1, source_component=90)
 
 # Wait a heartbeat before sending commands
 master.wait_heartbeat()

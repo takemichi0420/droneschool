@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drone Web Controller</title>
+    <link rel="stylesheet" href="/static/style.css?v=20260717-1" />
+    <!-- Leaflet will be loaded locally from /static/leaflet/ -->
+    <link rel="stylesheet" href="/static/leaflet/leaflet.css" />
+    <script src="/static/leaflet/leaflet.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Drone Web Controller</h1>
+    </header>
+
+    <div class="container">
+      <div class="left-panel">
+        <section class="panel">
+          <h2>Status</h2>
+          <table class="status-table">
+            <tr><th>Connected</th><td id="connected">false</td></tr>
+            <tr><th>Armed</th><td id="armed">false</td></tr>
+            <tr><th>Mode</th><td id="mode">UNKNOWN</td></tr>
+            <tr><th>Latitude</th><td id="latitude">0.000000</td></tr>
+            <tr><th>Longitude</th><td id="longitude">0.000000</td></tr>
+            <tr><th>Altitude</th><td id="altitude">0.00</td></tr>
+            <tr><th>Heading</th><td id="heading">0</td></tr>
+          </table>
+        </section>
+
+        <section class="panel">
+          <h2>Control</h2>
+          <button id="connectBtn">Connect</button>
+          <button id="armBtn">Arm</button>
+          <button id="disarmBtn">Disarm</button>
+          <button id="landBtn">Land</button>
+
+          <label for="takeoffAltitude">Takeoff Altitude (m)</label>
+          <input id="takeoffAltitude" type="number" value="5" step="1" />
+          <button id="takeoffBtn">Takeoff</button>
+
+          <label for="gotoLat">Latitude</label>
+          <input id="gotoLat" type="number" step="0.000001" value="35.681236" />
+          <label for="gotoLon">Longitude</label>
+          <input id="gotoLon" type="number" step="0.000001" value="139.767125" />
+          <label for="gotoAlt">Altitude (m)</label>
+          <input id="gotoAlt" type="number" value="5" />
+          <button id="gotoBtn">Go To</button>
+
+          <label for="modeSelect">Mode</label>
+          <select id="modeSelect">
+            <option>GUIDED</option>
+            <option>AUTO</option>
+            <option>RTL</option>
+            <option>LOITER</option>
+            <option>STABILIZE</option>
+          </select>
+          <button id="modeBtn">Set Mode</button>
+        </section>
+
+        <section class="panel">
+          <h2>Status Message</h2>
+          <div id="message">Ready.</div>
+        </section>
+      </div>
+
+      <div class="right-panel">
+        <div id="map"></div>
+        <section class="panel movement-panel">
+          <h2>Movement</h2>
+          <div class="move-grid">
+            <div></div>
+            <button id="forwardBtn" class="move-btn">↑ Forward</button>
+            <div></div>
+            <button id="leftBtn" class="move-btn">← Left</button>
+            <div></div>
+            <button id="rightBtn" class="move-btn">Right →</button>
+            <div></div>
+            <button id="backBtn" class="move-btn">↓ Back</button>
+            <div></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="/static/script.js?v=20260717-1"></script>
+  </body>
+</html>

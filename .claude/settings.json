@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/guardrail.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

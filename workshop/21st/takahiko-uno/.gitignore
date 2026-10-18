@@ -1,0 +1,28 @@
+# AI agent settings (avoid API key leaks)
+.claude/
+.codex/
+
+# VS Code local settings
+.vscode/
+
+# Node / Web app typical ignores
+node_modules/
+dist/
+build/
+
+# Python cache  Copilot からの推奨 7/23
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Python virtual environment Copilot からの推奨 7/23
+venv/
+.env/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

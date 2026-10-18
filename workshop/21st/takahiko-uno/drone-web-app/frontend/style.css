@@ -1,0 +1,187 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  background: #f0f2f5;
+  color: #222;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #1c2b3a;
+  color: #fff;
+}
+
+header h1 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.badge {
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.badge.connected {
+  background: #2e7d32;
+}
+
+.badge.disconnected {
+  background: #b71c1c;
+}
+
+main {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  align-items: stretch;
+}
+
+.panels {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 340px;
+  flex: 0 0 340px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  padding: 16px;
+}
+
+.card h2 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 6px;
+}
+
+.status-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.status-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed #eee;
+}
+
+.status-list span {
+  color: #666;
+}
+
+.status-list b {
+  font-variant-numeric: tabular-nums;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  background: #e2e6ea;
+  color: #222;
+  font-size: 0.9rem;
+}
+
+button:hover {
+  filter: brightness(0.95);
+}
+
+button.primary {
+  background: #2b7cff;
+  color: #fff;
+}
+
+button.warn {
+  background: #e67e22;
+  color: #fff;
+}
+
+.field {
+  margin-bottom: 12px;
+}
+
+.field > label {
+  display: block;
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+input,
+select {
+  padding: 7px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.log {
+  margin-top: 12px;
+  padding: 10px;
+  background: #f7f9fb;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #333;
+  min-height: 2.4em;
+  word-break: break-all;
+}
+
+.map-card {
+  flex: 1;
+  padding: 8px;
+  display: flex;
+}
+
+#map {
+  flex: 1;
+  width: 100%;
+  min-height: 560px;
+  border-radius: 8px;
+}
+
+/* スマートフォン幅では縦並びに崩す */
+@media (max-width: 768px) {
+  main {
+    flex-direction: column;
+  }
+
+  .panels {
+    width: 100%;
+    flex: none;
+  }
+
+  #map {
+    min-height: 360px;
+  }
+}

@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs and databases
+*.log
+db.sqlite3
+
+# MAVLink / SITL
+*.tlog
+mav.tlog*
+mav.parm
+eeprom.bin
+*.BIN
+logs/
+terrain/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project artifacts
+build/
+dist/
+*.egg-info/

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Lite Mapper - Drone Control</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Lite Mapper - Drone Web Control</h1>
+    </header>
+
+    <div class="container">
+        <!-- 左エリア: 操作パネル -->
+        <div class="left-panel">
+            <section class="panel-block">
+                <h2>接続</h2>
+                <input type="text" id="connection-string" placeholder="tcp:127.0.0.1:5762">
+                <button id="btn-connect">Connect</button>
+                <button id="btn-disconnect">Disconnect</button>
+                <div id="connection-status" class="status-badge disconnected">Disconnected</div>
+            </section>
+
+            <section class="panel-block">
+                <h2>フライトモード</h2>
+                <button id="btn-guided">GUIDED</button>
+                <button id="btn-rtl">RTL</button>
+                <button id="btn-land">LAND</button>
+            </section>
+
+            <section class="panel-block">
+                <h2>ARM制御</h2>
+                <button id="btn-arm">ARM</button>
+                <button id="btn-disarm">DISARM</button>
+            </section>
+
+            <section class="panel-block">
+                <h2>離陸</h2>
+                <input type="number" id="takeoff-altitude" placeholder="高度(m)" value="5" min="1">
+                <button id="btn-takeoff">TAKEOFF</button>
+            </section>
+
+            <section class="panel-block">
+                <h2>移動</h2>
+                <input type="text" id="goto-lat" placeholder="Latitude (例: 35.879129)">
+                <input type="text" id="goto-lon" placeholder="Longitude (例: 140.339683)">
+                <input type="number" id="goto-alt" placeholder="Altitude(m)" value="5" min="1">
+                <button id="btn-goto">GOTO</button>
+            </section>
+
+            <section class="panel-block">
+                <h2>ログ</h2>
+                <div id="log-area"></div>
+            </section>
+        </div>
+
+        <!-- 右エリア: 地図・状態表示 -->
+        <div class="right-panel">
+            <div id="map"></div>
+
+            <div class="status-panel">
+                <div class="bottom-panels">
+
+    <div class="status-panel">
+
+        <h2>Status</h2>
+
+        <table>
+                    <tr><td>接続状態</td><td id="status-connected">-</td></tr>
+                    <tr><td>Latitude</td><td id="status-lat">-</td></tr>
+                    <tr><td>Longitude</td><td id="status-lon">-</td></tr>
+                    <tr><td>Altitude (相対)</td><td id="status-alt">-</td></tr>
+                    <tr><td>Flight Mode</td><td id="status-mode">-</td></tr>
+                    <tr><td>ARM状態</td><td id="status-armed">-</td></tr>
+                    <tr><td>Groundspeed</td><td id="status-speed">-</td></tr>
+                    <tr><td>Battery</td><td id="status-battery">-</td></tr>
+
+        </table>
+
+    </div>
+
+    <div class="point-panel">
+
+        <h2>Saved Points</h2>
+
+        <button id="btn-save-point">
+            現在地点保存
+        </button>
+
+        <div id="saved-points-list">
+
+        </div>
+
+    </div>
+
+</div>
+ 
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

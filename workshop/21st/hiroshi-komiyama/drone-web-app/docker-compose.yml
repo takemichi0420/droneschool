@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  drone-web-app:
+    image: comy33/drone-web-app:latest
+    container_name: drone-web-app
+    restart: unless-stopped
+    ports:
+      - "9999:9999"
+    environment:
+#      - MAV_ENDPOINT=udpout:host.docker.internal:14550
+#      - MAV_ENDPOINT=udp:host.docker.internal:14550
+#       - MAV_ENDPOINT=udp:host.docker.internal:14550
+#       - MAV_ENDPOINT=udp:0.0.0.0:14550
+#       - MAV_ENDPOINT=udpout:host.docker.internal:14550
+#        - MAV_ENDPOINT=udp:0.0.0.0:14550
+        - MAV_ENDPOINT=udpout:host.docker.internal:14550
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9999/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s

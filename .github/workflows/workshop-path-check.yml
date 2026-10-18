@@ -1,0 +1,53 @@
+# 課題提出 PR のガードレール:
+# workshop/ 配下を変更する PR は、単一の workshop/<期>/<氏名>/ 配下のみ
+# 変更していることをチェックする(教材や他の受講生のフォルダへの混入を防ぐ)。
+# workshop/ を変更しない PR(教材メンテ等)はチェック対象外。
+name: workshop-path-check
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  path-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 変更ファイルがワークフォルダ内に収まっているか確認
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+
+          ws=(); other=()
+          for f in "${files[@]}"; do
+            case "$f" in
+              workshop/*) ws+=("$f") ;;
+              *) other+=("$f") ;;
+            esac
+          done
+
+          if [ "${#ws[@]}" -eq 0 ]; then
+            echo "workshop/ 配下の変更なし(教材の変更のみ)。チェックをスキップします。"
+            exit 0
+          fi
+
+          if [ "${#other[@]}" -gt 0 ]; then
+            echo "::error::workshop/ 配下とそれ以外の変更が混在しています。課題提出 PR では自分のワークフォルダ以外を変更しないでください:"
+            printf ' - %s\n' "${other[@]}"
+            exit 1
+          fi
+
+          prefixes=$(printf '%s\n' "${ws[@]}" \
+            | awk -F/ 'NF>=4 {print $1"/"$2"/"$3; next} {print "(ワークフォルダ外) "$0}' \
+            | sort -u)
+
+          if [ "$(echo "$prefixes" | wc -l)" -ne 1 ] || echo "$prefixes" | grep -q '^(ワークフォルダ外)'; then
+            echo "::error::複数のワークフォルダにまたがる変更、または workshop/<期>/<氏名>/ の外の変更があります:"
+            echo "$prefixes"
+            exit 1
+          fi
+
+          echo "OK: 変更は ${prefixes} 配下のみです。"

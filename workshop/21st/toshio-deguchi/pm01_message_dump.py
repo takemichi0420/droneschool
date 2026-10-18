@@ -1,0 +1,46 @@
+from pymavlink import mavutil
+import time
+
+# 機体への接続(修正前のパラメータ)
+#master: mavutil.mavfile = mavutil.mavlink_connection(
+#    "127.0.0.1:14551", source_system=1, source_component=90)
+#master.wait_heartbeat()
+
+# 機体への接続（修正後のパラメータ、養成塾指示、WindowsのIPv4アドレス）(失敗)
+#master: mavutil.mavfile = mavutil.mavlink_connection(
+#    "tcp:192.168.11.2:5762", source_system=1, source_component=90)
+#master.wait_heartbeat()
+
+# 機体への接続(wslのループバックアドレス）（成功）
+master: mavutil.mavfile = mavutil.mavlink_connection(
+    "tcp:127.0.0.1:5762", source_system=1, source_component=90)
+master.wait_heartbeat()
+
+# 機体への接続(powershellでipconfigコマンド実行で取得したWSLのイーサネットアダプタIPv4アドレス）（失敗）
+#master: mavutil.mavfile = mavutil.mavlink_connection(
+#    "tcp:172.29.64.1:5762", source_system=1, source_component=90)
+#master.wait_heartbeat()
+
+# 機体への接続(ubuntuで実行コマンドhostname -Iで取得したIPアドレス)（成功）
+#master: mavutil.mavfile = mavutil.mavlink_connection(
+#    "tcp:172.29.66.78:5762", source_system=1, source_component=90)
+#master.wait_heartbeat()
+
+
+# 全メッセージを10Hzで受信
+# master.mav.request_data_stream_send(
+#     master.target_system, master.target_component,
+#     0, 10, 1)
+
+# GLOBAL_POSITION_INT(33)メッセージを10Hzで受信
+master.mav.command_long_send(
+    master.target_system, master.target_component,
+    mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL,
+    0, 33, 100000, 0, 0, 0, 0, 0)
+
+while True:
+    try:
+        print(master.recv_match().to_dict())
+    except:
+        pass
+    time.sleep(0.01)
